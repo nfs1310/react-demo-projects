@@ -11,17 +11,15 @@ export default defineConfig([
   // https://dev.to/denivladislav/set-up-a-new-react-project-vite-typescript-eslint-prettier-and-pre-commit-hooks-3abn
   // CHANGES ARE DENOTED AS "//REF"
   
-  globalIgnores(['dist']),
+  globalIgnores(['dist', 'recommended-type-checked.ts']),
   {
-    //REF
-    ignores: [dist],
     files: ['**/*.{ts,tsx}'],
     extends: [
       js.configs.recommended,
 
       //REF
-      // tseslint.configs.recommended,
-      ...tseslint.configs.recommendedTypeChecked,
+      tseslint.configs.recommended,
+      // ...tseslint.configs.recommendedTypeChecked,
       
       reactHooks.configs.flat.recommended,
       reactRefresh.configs.vite,
