@@ -1,11 +1,13 @@
+import type CardType from "../interfaces/CardType"
 
-import React from 'react'
-
-const Card = ({ card }: { card: any }) => {
+const Card = ({ card, onClick }: { card: CardType; onClick: (card: CardType) => void }) => {
     return (
-        <div className="card">
+        <div className={`card ${card.isFlipped ? "flipped" : ""}`} onClick={() => onClick(card)}>
+            <div className='card-front'>
+                ?
+            </div>
             <div className='card-back'>
-                {card}
+                {card.value}
             </div>
         </div>
     )
