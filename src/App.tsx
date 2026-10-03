@@ -34,7 +34,7 @@ function App() {
   const initializeCardGame = () => {
     const shuffleCards = [...cardValues].sort(() => Math.random() - 0.5);
     
-    const shuffledCards = cardValues.map((value, index) => ({
+    const shuffledCards = shuffleCards.map((value, index) => ({
       id: index,
       value,
       isFlipped: false,
