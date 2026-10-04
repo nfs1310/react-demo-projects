@@ -54,19 +54,44 @@ const songs: Song[] = [
 
 export const useMusic = () => {
     const [allSongs, setAllSongs] = useState<Song[]>(songs);
-    const [currentSong, setCurrentSong] = useState<Song | null>(null);
+    const [currentSong, setCurrentSong] = useState<Song>(songs[0]);
     const [currentSongIndex, setCurrentSongIndex] = useState<number>(0);
+    const [currentTime, setCurrentTime] = useState<number>(0);
+    const [duration, setDuration] = useState<number>(0);
 
     const handlePlaySong = (song: Song, index: number) => {
         setCurrentSong(song);
         setCurrentSongIndex(index);
     }
 
+    const formatTime = (time: number): string => {
+        const minutes = Math.floor(time / 60);
+        const seconds = Math.floor(time % 60);
+        return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+    }
+
+    const formatStringTime = (time: string): string => {console.log('formatStringTime', time);
+        if(+time === 0 || time === undefined) return '0:00';
+        const timaArray = time.split(':');
+        const minutes = timaArray[0];
+        const seconds = timaArray[1];
+        return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+        // const minutes = Math.floor(parseInt(time) / 60);
+        // const seconds = Math.floor(parseInt(time) % 60);
+        // return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+    }
+
 
     return {
         allSongs,
         handlePlaySong,
+        formatStringTime,
+        formatTime,
         currentSong,
         currentSongIndex,
+        currentTime,
+        setCurrentTime,
+        duration,
+        setDuration,
     };
 }
