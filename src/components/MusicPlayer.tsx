@@ -1,11 +1,26 @@
+import { useEffect, useRef } from "react";
 import { useMusic } from "../hooks/useMusic"
 
 
 const MusicPlayer = () => {
+  const audioRef = useRef<HTMLAudioElement>(null);
+
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+
+    const handleLoadedMetadata = () => {};
+
+    const handleTimeUpdate = () => {} ;
+
+    const handleEnded = () => {};
+  }, []);
+
   const { currentSong, formatStringTime, currentTime, duration } = useMusic();
   return (
     <div className="music-player">
-      <audio />
+      <audio ref={audioRef} preload="metadata" crossOrigin="anonymous" />
+
       <div className="track-info">
         <h3 className="track-title">{currentSong?.title}</h3>
         <p className="track-artist">{currentSong?.artist}</p>
