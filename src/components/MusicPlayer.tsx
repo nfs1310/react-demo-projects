@@ -53,15 +53,25 @@ const MusicPlayer = () => {
     };
 
     audio.addEventListener("loadedmetadata", handleLoadedMetadata);
+    audio.addEventListener("canPlay", handleLoadedMetadata);
     audio.addEventListener("timeupdate", handleTimeUpdate);
     audio.addEventListener("ended", handleEnded);
 
     return () => {
       audio.removeEventListener("loadedmetadata", handleLoadedMetadata);
+      audio.removeEventListener("canPlay", handleLoadedMetadata);
       audio.removeEventListener("timeupdate", handleTimeUpdate);
       audio.removeEventListener("ended", handleEnded);
     }
-  }, [setDuration, setCurrentTime, currentSong]);
+  }, [setDuration, setCurrentTime, currentSong, nextSong]);
+
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+    audio.load();
+    setCurrentTime(0);
+    setDuration(0);
+  }, [currentSong, setDuration, setCurrentTime]);
 
   const progressPercentage = duration ? (currentTime / duration) * 100 : 0;
 
