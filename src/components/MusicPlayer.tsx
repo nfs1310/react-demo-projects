@@ -3,8 +3,28 @@ import { useMusic } from "../hooks/useMusic"
 
 
 const MusicPlayer = () => {
-  const { currentSong, formatTime, currentTime, duration, setDuration, setCurrentTime, nextSong, prevSong, isPlaying, play, pause } = useMusic();
+  const { currentSong, formatTime, currentTime, duration, setDuration, 
+    setCurrentTime, nextSong, prevSong, isPlaying, play, pause, volume, setVolume } = useMusic();
   const audioRef = useRef<HTMLAudioElement>(null);
+
+  const handleTimeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const audio = audioRef.current;
+    if (!audio) return;
+    const newTime = parseFloat(event.target.value);
+    audio.currentTime = newTime;
+    setCurrentTime(newTime);
+  }
+
+  const handleVolumeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const newVolume = parseFloat(event.target.value);
+    setVolume(newVolume);
+  }
+
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+    audio.volume = volume;
+  }, [volume]);
 
   useEffect(() => {
     const audio = audioRef.current;
@@ -14,7 +34,7 @@ const MusicPlayer = () => {
     } else {
       audio.pause();
     }
-  });
+  }, [isPlaying]);
 
   useEffect(() => {
     const audio = audioRef.current;
@@ -26,11 +46,11 @@ const MusicPlayer = () => {
 
     const handleTimeUpdate = () => {
       setCurrentTime(+audio.currentTime);
-     };
+    };
 
     const handleEnded = () => {
       nextSong();
-     };
+    };
 
     audio.addEventListener("loadedmetadata", handleLoadedMetadata);
     audio.addEventListener("timeupdate", handleTimeUpdate);
@@ -42,6 +62,8 @@ const MusicPlayer = () => {
       audio.removeEventListener("ended", handleEnded);
     }
   }, [setDuration, setCurrentTime, currentSong]);
+
+  const progressPercentage = duration ? (currentTime / duration) * 100 : 0;
 
   return (
     <div className="music-player">
@@ -59,8 +81,8 @@ const MusicPlayer = () => {
           max={duration || 0}
           value={currentTime || 0}
           step="0.1"
-          readOnly
-        // onChange={handleTimeChange}
+          style={{"--progress": `${progressPercentage}%`} as React.CSSProperties}
+          onChange={handleTimeChange}
         />
         <span className="time">{formatTime(+duration)}</span>
         {/* <span className="time">NUMBER: {formatTime(duration)}</span> */}
@@ -78,6 +100,19 @@ const MusicPlayer = () => {
         <button className="control-btn" onClick={nextSong}>
           ⏭
         </button>
+      </div>
+
+      <div className="volume-container">
+        <span className="volume-icon">🔊</span>
+        <input
+          type="range"
+          min="0"
+          max="1"
+          step="0.1"
+          className="volume-bar"
+          onChange={handleVolumeChange}
+          value={volume}
+        />
       </div>
     </div>
   )

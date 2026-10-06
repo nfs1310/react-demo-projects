@@ -59,6 +59,7 @@ export const useMusic = () => {
     const [currentTime, setCurrentTime] = useState<number>(0);
     const [duration, setDuration] = useState<number>(0);
     const [isPlaying, setIsPlaying] = useState<boolean>(false);
+    const [volume, setVolume] = useState<number>(1);
 
     const handlePlaySong = (song: Song, index: number) => {
         setCurrentSong(song);
@@ -89,6 +90,7 @@ export const useMusic = () => {
             setCurrentSong(allSongs[nextIndex]);
             return nextIndex;
         });
+        setIsPlaying(false); // Pause the current song when moving to the next song
     }
 
     const prevSong = () => {
@@ -97,6 +99,7 @@ export const useMusic = () => {
             setCurrentSong(allSongs[nextIndex]);
             return nextIndex;
         });
+        setIsPlaying(false); // Pause the current song when moving to the previous song
     }
 
     const play = () => setIsPlaying(true);
@@ -119,5 +122,7 @@ export const useMusic = () => {
         isPlaying,
         play,
         pause,
+        volume,
+        setVolume,
     };
 }
