@@ -24,18 +24,22 @@ const MusicPlayer = () => {
       setDuration(+audio.duration);
     };
 
-    const handleTimeUpdate = () => { };
+    const handleTimeUpdate = () => {
+      setCurrentTime(+audio.currentTime);
+     };
 
-    const handleEnded = () => { };
+    const handleEnded = () => {
+      nextSong();
+     };
 
     audio.addEventListener("loadedmetadata", handleLoadedMetadata);
-    // audio.addEventListener("timeupdate", handleTimeUpdate);
-    // audio.addEventListener("ended", handleEnded);
+    audio.addEventListener("timeupdate", handleTimeUpdate);
+    audio.addEventListener("ended", handleEnded);
 
     return () => {
       audio.removeEventListener("loadedmetadata", handleLoadedMetadata);
-      // audio.removeEventListener("timeupdate", handleTimeUpdate);
-      // audio.removeEventListener("ended", handleEnded);
+      audio.removeEventListener("timeupdate", handleTimeUpdate);
+      audio.removeEventListener("ended", handleEnded);
     }
   }, [setDuration, setCurrentTime, currentSong]);
 
