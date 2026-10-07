@@ -1,10 +1,10 @@
 import { useEffect, useRef } from "react";
-import { useMusic } from "../hooks/useMusic"
+import { useMusicContext } from "../contexts/MusicContext";
 
 
 const MusicPlayer = () => {
   const { currentSong, formatTime, currentTime, duration, setDuration, 
-    setCurrentTime, nextSong, prevSong, isPlaying, play, pause, volume, setVolume } = useMusic();
+    setCurrentTime, nextSong, prevSong, isPlaying, play, pause, volume, setVolume } = useMusicContext();  
   const audioRef = useRef<HTMLAudioElement>(null);
 
   const handleTimeChange = (event: React.ChangeEvent<HTMLInputElement>) => {

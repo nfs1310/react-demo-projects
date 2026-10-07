@@ -1,5 +1,16 @@
-import { useState } from "react";
+import { createContext, useContext, useState } from "react";
 import type Song from "../interfaces/Song";
+import type MusicContextValue from "../interfaces/MusicContextValue";
+
+const MusicContext = createContext<MusicContextValue | undefined>(undefined);
+
+export const useMusicContext = (): MusicContextValue => {
+    const context = useContext(MusicContext);
+    if (context === undefined) {
+        throw new Error("useMusicContext must be used within a MusicProvider");
+    }
+    return context;
+}
 
 const songs: Song[] = [
     {
@@ -52,8 +63,8 @@ const songs: Song[] = [
     // },
 ];
 
-export const useMusic = () => {
-    const [allSongs, setAllSongs] = useState<Song[]>(songs);
+export const MusicProvider = ({ children }: { children: React.ReactNode }) => {
+    const [allSongs] = useState<Song[]>(songs);
     const [currentSong, setCurrentSong] = useState<Song>(songs[0]);
     const [currentSongIndex, setCurrentSongIndex] = useState<number>(0);
     const [currentTime, setCurrentTime] = useState<number>(0);
@@ -85,44 +96,43 @@ export const useMusic = () => {
     }
 
     const nextSong = () => {
-        setCurrentSongIndex((prevIndex) => {
-            const nextIndex = (prevIndex + 1) % allSongs.length;
-            setCurrentSong(allSongs[nextIndex]);
-            return nextIndex;
-        });
+        const nextIndex = (currentSongIndex + 1) % allSongs.length;
+        setCurrentSongIndex(nextIndex);
+        setCurrentSong(allSongs[nextIndex]);
         setIsPlaying(false); // Pause the current song when moving to the next song
     }
 
     const prevSong = () => {
-        setCurrentSongIndex((prevIndex) => {
-            const nextIndex = prevIndex === 0 ? allSongs.length - 1 : prevIndex - 1;
-            setCurrentSong(allSongs[nextIndex]);
-            return nextIndex;
-        });
+        const prevIndex = currentSongIndex === 0 ? allSongs.length - 1 : currentSongIndex - 1;
+        setCurrentSongIndex(prevIndex);
+        setCurrentSong(allSongs[prevIndex]);
         setIsPlaying(false); // Pause the current song when moving to the previous song
     }
 
     const play = () => setIsPlaying(true);
     const pause = () => setIsPlaying(false);
-
-
-    return {
-        allSongs,
-        handlePlaySong,
-        formatStringTime,
-        formatTime,
-        currentSong,
-        currentSongIndex,
-        currentTime,
-        setCurrentTime,
-        duration,
-        setDuration,
-        nextSong,
-        prevSong,
-        isPlaying,
-        play,
-        pause,
-        volume,
-        setVolume,
-    };
+    return (
+        <MusicContext.Provider value={{
+            allSongs,
+            handlePlaySong,
+            formatStringTime,
+            formatTime,
+            currentSong,
+            currentSongIndex,
+            currentTime,
+            setCurrentTime,
+            duration,
+            setDuration,
+            nextSong,
+            prevSong,
+            isPlaying,
+            play,
+            pause,
+            volume,
+            setVolume,
+        }}>
+            {children}
+        </MusicContext.Provider>
+    );
 }
+

@@ -1,7 +1,7 @@
-import { useMusic } from "../hooks/useMusic";
+import { useMusicContext } from "../contexts/MusicContext";
 
 const AllSongs = () => {
-    const { allSongs, handlePlaySong, currentSong, currentSongIndex } = useMusic();
+    const { allSongs, handlePlaySong, currentSongIndex } = useMusicContext();
     return (
         <div className="all-songs">
             <h2>
