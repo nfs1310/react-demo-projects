@@ -1,6 +1,7 @@
 import { createContext, useContext, useState } from "react";
 import type Song from "../interfaces/Song";
 import type MusicContextValue from "../interfaces/MusicContextValue";
+import type Playlist from "../interfaces/Playlist";
 
 const MusicContext = createContext<MusicContextValue | undefined>(undefined);
 
@@ -71,6 +72,7 @@ export const MusicProvider = ({ children }: { children: React.ReactNode }) => {
     const [duration, setDuration] = useState<number>(0);
     const [isPlaying, setIsPlaying] = useState<boolean>(false);
     const [volume, setVolume] = useState<number>(1);
+    const [playlists, setPlaylists] = useState<Playlist[]>([]);
 
     const handlePlaySong = (song: Song, index: number) => {
         setCurrentSong(song);
@@ -109,6 +111,16 @@ export const MusicProvider = ({ children }: { children: React.ReactNode }) => {
         setIsPlaying(false); // Pause the current song when moving to the previous song
     }
 
+    const createPlaylist = (name: string) => {
+        const newPlaylist: Playlist = {
+            id: Date.now().toString(),
+            name: name,
+            songs: [],
+        };
+        // setPlaylists([...playlists, newPlaylist]);
+        setPlaylists((prevPlaylists) => [...prevPlaylists, newPlaylist]);
+    }
+
     const play = () => setIsPlaying(true);
     const pause = () => setIsPlaying(false);
     return (
@@ -130,6 +142,8 @@ export const MusicProvider = ({ children }: { children: React.ReactNode }) => {
             pause,
             volume,
             setVolume,
+            createPlaylist,
+            playlists,
         }}>
             {children}
         </MusicContext.Provider>
