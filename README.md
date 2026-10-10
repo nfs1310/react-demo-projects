@@ -111,8 +111,7 @@ react-demo-projects/
 │  ├─ icons.svg
 │  └─ songs/
 │     ├─ egyptian.mp3
-│     ├─ paap.mp3
-│     └─ finalCountdown.wav
+│     └─ paap.mp3
 ├─ src/
 │  ├─ components/
 │  │  ├─ Navbar.tsx        # Top navigation between All Songs and Playlists
