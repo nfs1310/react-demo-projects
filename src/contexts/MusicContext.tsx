@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import type Song from "../interfaces/Song";
 import type MusicContextValue from "../interfaces/MusicContextValue";
 import type Playlist from "../interfaces/Playlist";
@@ -73,6 +73,23 @@ export const MusicProvider = ({ children }: { children: React.ReactNode }) => {
     const [isPlaying, setIsPlaying] = useState<boolean>(false);
     const [volume, setVolume] = useState<number>(1);
     const [playlists, setPlaylists] = useState<Playlist[]>([]);
+    const localStoragePlaylistKey = 'musicPlayer';
+
+    useEffect(() => {
+        let savedPlaylists = localStorage.getItem(localStoragePlaylistKey);
+        if(savedPlaylists){
+            let parsedPlaylist = JSON.parse(savedPlaylists);
+            setPlaylists(parsedPlaylist);
+        }
+    }, []);
+
+    useEffect(() => {
+        if (playlists.length > 0) {
+            localStorage.setItem(localStoragePlaylistKey, JSON.stringify(playlists));
+        } else {
+            localStorage.removeItem(localStoragePlaylistKey);
+        }
+    }, [playlists]);
 
     const handlePlaySong = (song: Song, index: number) => {
         setCurrentSong(song);
