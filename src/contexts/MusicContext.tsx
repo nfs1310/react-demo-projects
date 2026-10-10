@@ -65,7 +65,7 @@ const songs: Song[] = [
 ];
 
 export const MusicProvider = ({ children }: { children: React.ReactNode }) => {
-    const [allSongs] = useState<Song[]>(songs);
+    const [songsList] = useState<Song[]>(songs);
     const [currentSong, setCurrentSong] = useState<Song>(songs[0]);
     const [currentSongIndex, setCurrentSongIndex] = useState<number>(0);
     const [currentTime, setCurrentTime] = useState<number>(0);
@@ -98,16 +98,16 @@ export const MusicProvider = ({ children }: { children: React.ReactNode }) => {
     }
 
     const nextSong = () => {
-        const nextIndex = (currentSongIndex + 1) % allSongs.length;
+        const nextIndex = (currentSongIndex + 1) % songsList.length;
         setCurrentSongIndex(nextIndex);
-        setCurrentSong(allSongs[nextIndex]);
+        setCurrentSong(songsList[nextIndex]);
         setIsPlaying(false); // Pause the current song when moving to the next song
     }
 
     const prevSong = () => {
-        const prevIndex = currentSongIndex === 0 ? allSongs.length - 1 : currentSongIndex - 1;
+        const prevIndex = currentSongIndex === 0 ? songsList.length - 1 : currentSongIndex - 1;
         setCurrentSongIndex(prevIndex);
-        setCurrentSong(allSongs[prevIndex]);
+        setCurrentSong(songsList[prevIndex]);
         setIsPlaying(false); // Pause the current song when moving to the previous song
     }
 
@@ -121,11 +121,26 @@ export const MusicProvider = ({ children }: { children: React.ReactNode }) => {
         setPlaylists((prevPlaylists) => [...prevPlaylists, newPlaylist]);
     }
 
+    const addSongToPlaylist = (playlistId: string, song: Song) => {
+        setPlaylists((prev) =>
+            prev.map((playlist: Playlist) => {
+                if (playlist.id === playlistId) {
+                    return { ...playlist, songs: [...playlist.songs, song] };
+                } else
+                    return playlist;
+            })
+        );
+    }
+
+    const deletePlaylist = (id: string) => {
+        setPlaylists((prev) => prev.filter(p => p.id !== id));
+    };
+
     const play = () => setIsPlaying(true);
     const pause = () => setIsPlaying(false);
     return (
         <MusicContext.Provider value={{
-            allSongs,
+            songsList,
             handlePlaySong,
             formatStringTime,
             formatTime,
@@ -144,6 +159,9 @@ export const MusicProvider = ({ children }: { children: React.ReactNode }) => {
             setVolume,
             createPlaylist,
             playlists,
+            addSongToPlaylist,
+            setCurrentSong,
+            deletePlaylist
         }}>
             {children}
         </MusicContext.Provider>

@@ -1,8 +1,9 @@
 import type Song from "../interfaces/Song";
 import type Playlist from "../interfaces/Playlist";
+import type React from "react";
 
 export default interface MusicContextValue {
-    allSongs: Song[];
+    songsList: Song[];
     handlePlaySong: (song: Song, index: number) => void;
     formatStringTime: (time: string) => string;
     formatTime: (time: number) => string;
@@ -21,4 +22,7 @@ export default interface MusicContextValue {
     setVolume: React.Dispatch<React.SetStateAction<number>>;
     playlists: Playlist[];
     createPlaylist: (name: string) => void;
+    addSongToPlaylist: (playlistId: string, song: Song) => void;
+    setCurrentSong: React.Dispatch<React.SetStateAction<Song>>;
+    deletePlaylist: (name: string) => void;
 }

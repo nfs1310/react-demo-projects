@@ -1,14 +1,14 @@
 import { useMusicContext } from "../contexts/MusicContext";
 
 const AllSongs = () => {
-    const { allSongs, handlePlaySong, currentSongIndex } = useMusicContext();
+    const { songsList, handlePlaySong, currentSongIndex } = useMusicContext();
     return (
         <div className="all-songs">
             <h2>
-                All Songs ({allSongs.length})
+                All Songs ({songsList.length})
             </h2>
             <div className="songs-grid">
-                {allSongs.map((song, key) => (
+                {songsList.map((song, key) => (
                     <div key={key} className={`song-card ${currentSongIndex === key ? 'active' : ''}`} onClick={() => handlePlaySong(song, key)}>
                         <div className="song-info">
                             <h3 className="song-title">{song.title}</h3>
