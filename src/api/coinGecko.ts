@@ -13,3 +13,14 @@ export const getCryptoData = async (): Promise<Crypto[]> => {
 
     return await response.json();
 }
+
+export const getCryptoById = async (id: string): Promise<Crypto> => {
+    const response = await fetch(
+        `${BASE_URL}/coins/${id}?localization=false&tickers=false&market_data=true&community_data=false&developer_data=false&sparkline=false`);
+
+    if (!response.ok) {
+        throw new Error('Failed to fetch crypto data.');
+    }
+
+    return await response.json();
+}
