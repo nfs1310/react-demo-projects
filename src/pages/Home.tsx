@@ -37,7 +37,7 @@ const Home = () => {
             ) : (
                 <div className='crypto-container'>
                     {cryptoList.map((crypto, key) => (
-                        <CryptoCard />
+                        <CryptoCard crypto={crypto} key={key} />
                     ))}
                 </div>
             )}
