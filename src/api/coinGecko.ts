@@ -1,3 +1,4 @@
+import type Coin from "../interfaces/Coin";
 import type Crypto from "../interfaces/Crypto";
 
 const BASE_URL = "https://api.coingecko.com/api/v3";
@@ -14,7 +15,7 @@ export const getCryptoData = async (): Promise<Crypto[]> => {
     return await response.json();
 }
 
-export const getCryptoById = async (id: string): Promise<Crypto> => {
+export const getCryptoById = async (id: string): Promise<Coin> => {
     const response = await fetch(
         `${BASE_URL}/coins/${id}?localization=false&tickers=false&market_data=true&community_data=false&developer_data=false&sparkline=false`);
 

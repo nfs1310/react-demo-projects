@@ -6,7 +6,7 @@ const CryptoCard = ({ crypto }: { crypto: Crypto }) => {
   return (
     <Link to={`/coin/${crypto.id}`} style={{ textDecoration: 'none' }}>
       <div className='crypto-card'>
-        <div className='cryto-header'>
+        <div className='crypto-header'>
           <div className='crypto-info'>
             <img src={crypto.image} alt={crypto.name} />
             <div>
