@@ -23,12 +23,10 @@ export default interface Crypto {
   atl: number;
   atl_change_percentage: number;
   atl_date: string;
-  roi:
-    | {
-        times: number;
-        currency: string;
-        percentage: number;
-      }
-    | null;
+  roi: {
+    times: number;
+    currency: string;
+    percentage: number;
+  } | null;
   last_updated: string;
 }
