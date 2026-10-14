@@ -1,105 +1,191 @@
-# React + TypeScript + Vite
+# 🚀 Crypto Tracker
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A single-page cryptocurrency tracking application built with **React 19 + TypeScript + Vite**. It consumes the public [CoinGecko API](https://www.coingecko.com/en/api) to display live market data for the top 100 cryptocurrencies, with search, sorting, grid/list views, auto-refresh, and an interactive 7-day price chart for every coin.
 
-Currently, two official plugins are available:
+This project lives on the **`4-crypto-website`** branch and is built on top of the shared template configuration (ESLint, Prettier, TypeScript, React Compiler) maintained in the base branch.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+---
 
-## Template Branch
+## Overview
 
-This branch is the **centralized template for all projects**. It is not an application of its own — its purpose is to hold shared project configuration, development standards, and tooling in one place.
+The app is a two-page experience:
 
-Configurations established here are intended to be **reusable defaults and a common baseline** for future projects. Centralizing them keeps projects consistent, removes repetitive setup work, and ensures that common development standards are applied the same way everywhere.
+1. **Home (`/`)** — a live dashboard of the top 100 coins by market cap.
+2. **Coin Detail (`/coin/:id`)** — a deeper look at a single coin, including price stats and a 7-day chart.
 
-### Configuration maintained in this branch
+Data is fetched directly from CoinGecko's REST API in the browser — no backend, no API key required for the endpoints used.
 
-- **ESLint** — `eslint.config.js` (flat config with type-aware TypeScript rules, React hooks/refresh rules, and Prettier integration).
-- **Prettier** — `.prettierrc` and `.prettierignore`, enforced through the `prettier/prettier` lint rule.
-- **TypeScript** — `tsconfig.json`, `tsconfig.app.json`, and `tsconfig.node.json`.
-- **Build and tooling** — `vite.config.ts` (Vite, React plugin, React Compiler) and the `package.json` scripts (`dev`, `build`, `lint`, `preview`).
-- **Git and ignore rules** — `.gitignore`.
-- **Setup documentation** — [eslint-prettier.md](./eslint-prettier.md) explains how the ESLint and Prettier configuration is wired together.
+---
 
-Other shared configuration (for example editor settings or Git hooks) may be centralized here as it is introduced.
+## Features
 
-### Working with this branch
+### Home page
 
-- **Use it as a starting point.** New projects should build on this branch — branch from it or copy the configuration files into the new project — instead of rebuilding the same setup from scratch.
-- **Prefer centralizing over duplicating.** If a configuration is needed across projects, maintain it in this branch rather than copying and maintaining separate copies in each project.
-- **Review shared changes carefully.** Changes here may become the baseline for future projects, so they should be made deliberately.
-- **Keep it reusable.** Project-specific functionality should not be added here just because it is useful to one project; this branch is primarily for common, reusable configuration.
-- **Changes are not propagated automatically.** Updating this branch does not update existing projects — those projects pull or copy the changes they want.
+- **Live market list** — top 100 cryptocurrencies ranked by market cap.
+- **Search** — filter coins instantly by name or symbol (case-insensitive).
+- **Sorting** — by rank, name, price (asc/desc), 24h change, or market cap.
+- **Grid / List views** — toggle between a responsive card grid and a stacked list.
+- **Auto-refresh** — data reloads every **30 seconds**, with a live countdown timer and progress bar showing the last updated time.
+- **Loading state** — animated spinner while data is being fetched.
+
+### Coin detail page
+
+- **Coin header** — logo, name, symbol, and market-cap rank.
+- **Current price** with 24h high/low ranges and a colored change badge (green up / red down).
+- **7-day price chart** — interactive line chart rendered with [Recharts](https://recharts.org/).
+- **Key stats** — market cap, volume, circulating supply, and total supply.
+- **Back navigation** and a graceful "Coin not found" fallback.
+
+---
+
+## Tech Stack
+
+| Concern       | Choice                                                 |
+| ------------- | ------------------------------------------------------ |
+| UI library    | React 19                                               |
+| Language      | TypeScript                                             |
+| Build tool    | Vite 8                                                 |
+| Routing       | React Router v8 (`BrowserRouter`, `Routes`)            |
+| Charts        | Recharts                                               |
+| Data source   | CoinGecko REST API                                     |
+| Styling       | Plain CSS (`src/index.css`) — glassmorphism dark theme |
+| Compiler      | React Compiler (via Babel plugin)                      |
+| Lint / Format | ESLint (flat config) + Prettier                        |
+
+---
+
+## Project Structure
+
+```
+src/
+├── api/
+│   └── coinGecko.ts        # All CoinGecko API calls (markets, coin detail, chart)
+├── components/
+│   └── CryptoCard.tsx      # Card used in the Home grid/list
+├── interfaces/
+│   ├── Coin.ts             # Full coin detail response type
+│   ├── Crypto.ts           # Market list item type (Home)
+│   └── MarketChart.ts      # Price/market-cap/volume chart data type
+├── pages/
+│   ├── Home.tsx            # Dashboard: list, search, sort, auto-refresh
+│   └── CoinDetail.tsx      # Single coin view + chart
+├── utils/
+│   └── formatter.ts        # Price + short-scale (B/T/M) number formatting
+├── App.tsx                 # Route definitions
+├── main.tsx                # React entry point
+└── index.css               # Global styles
+```
+
+---
+
+## Data Flow
+
+```
+CoinGecko API ──► src/api/coinGecko.ts ──► pages (Home / CoinDetail)
+                                             │
+                                             ├─► components (CryptoCard)
+                                             └─► utils (formatter)
+```
+
+All API logic is centralized in `src/api/coinGecko.ts`:
+
+| Function               | Endpoint                          | Used by    |
+| ---------------------- | --------------------------------- | ---------- |
+| `getCryptoData()`      | `/coins/markets` (USD, top 100)   | Home       |
+| `getCryptoById(id)`    | `/coins/{id}` (market data only)  | CoinDetail |
+| `gettDataForChart(id)` | `/coins/{id}/market_chart?days=7` | CoinDetail |
+
+The API base URL is `https://api.coingecko.com/api/v3` and is defined as `BASE_URL` in that file.
+
+---
+
+## Getting Started
+
+### Prerequisites
+
+- Node.js (a recent LTS version) and npm.
+
+### Install
+
+```bash
+npm install
+```
+
+### Run in development
+
+```bash
+npm run dev
+```
+
+Then open the URL printed by Vite (usually `http://localhost:5173`).
+
+### Build for production
+
+```bash
+npm run build
+```
+
+### Preview the production build
+
+```bash
+npm run preview
+```
+
+### Lint
+
+```bash
+npm run lint
+```
+
+---
+
+## Available Scripts
+
+| Script            | Description                               |
+| ----------------- | ----------------------------------------- |
+| `npm run dev`     | Start the Vite dev server with HMR        |
+| `npm run build`   | Type-check (`tsc -b`) and build with Vite |
+| `npm run lint`    | Run ESLint across the project             |
+| `npm run preview` | Serve the production build locally        |
+
+---
+
+## How It Works (key considerations)
+
+- **Auto-refresh loop** — `Home.tsx` runs a 1-second interval that decrements a 30-second countdown; when it hits 30 (reset), the data reloads and the "last updated" time is refreshed.
+- **Filtering & sorting** — derived in a `useEffect` that depends on `sortBy`, `cryptoList`, and `searchQuery`, producing a separate `filteredList` so the source data stays intact.
+- **Request cancellation** — `CoinDetail.tsx` uses a `cancelled` flag in its `useEffect` cleanup to ignore state updates from out-of-date requests when the route changes.
+- **Number formatting** — `formatPrice()` handles sub-cent prices (8 decimals) and normal currency formatting, while `formatToShortScale()` condenses large values into `M` / `B` / `T`.
+- **No API key needed** — only public CoinGecko endpoints are used, which are rate-limited; heavy use may hit those limits.
+
+---
 
 ## React Compiler
 
-The React Compiler is enabled on this template. See [this documentation](https://react.dev/learn/react-compiler) for more information.
+The React Compiler is enabled on this project through the Babel plugin in `vite.config.ts`. See the [React Compiler docs](https://react.dev/learn/react-compiler) for details. Note that this affects Vite dev and build performance.
 
-Note: This will impact Vite dev & build performances.
-You can also try [the experimental native React Compiler support in plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md#rust-react-compiler) by using `compiler: true` in the plugin options instead of using the Babel plugin.
+---
 
-## Expanding the ESLint configuration
+## Shared Configuration
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+This branch inherits the project's shared tooling baseline:
 
-> Note: type-aware lint rules (`tseslint.configs.recommendedTypeChecked`) are already enabled in this branch, so this section is kept for reference and for projects that need stricter or additional rules.
+- **ESLint** — `eslint.config.js` (flat config, type-aware TypeScript rules, React hooks/refresh rules, Prettier integration).
+- **Prettier** — `.prettierrc` and `.prettierignore`.
+- **TypeScript** — `tsconfig.json`, `tsconfig.app.json`, `tsconfig.node.json`.
+- **Build** — `vite.config.ts`.
+- **Setup notes** — see [eslint-prettier.md](./eslint-prettier.md) for how ESLint and Prettier are wired together.
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+---
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+## Security & Best Practices
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+- No API keys or secrets are required — only CoinGecko's public endpoints are used, so nothing sensitive is stored in the app.
+- `.gitignore` excludes `node_modules`, `dist`, build outputs, and `*.local` files. If you later add secrets, add a `.env` entry to `.gitignore` before committing.
+- Formatting and code quality are enforced through ESLint/Prettier; run `npm run lint` before committing.
 
-```
+---
 
-You can also install [eslint-plugin-react-x](https://npmx.dev/package/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://npmx.dev/package/eslint-plugin-react-dom) for React-specific lint rules:
+## Disclaimer
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-
-```
+Prices and market data are provided by the CoinGecko public API and are for informational/demo purposes only. This is a demo project and not financial advice.
