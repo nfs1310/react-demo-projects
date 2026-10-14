@@ -2,13 +2,13 @@ import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router';
 import { getCryptoById, gettDataForChart } from '../api/coinGecko';
 import type Coin from '../interfaces/Coin';
-import { formatPrice } from '../utils/formatter';
-import { Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
+import { formatPrice, formatToShortScale } from '../utils/formatter';
+import { CartesianGrid, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 import type MarketChart from '../interfaces/MarketChart';
 
 interface ChartDataPoint {
   time: string;
-  price: number;
+  price: string;
 }
 
 const CoinDetail = () => {
@@ -39,7 +39,7 @@ const CoinDetail = () => {
               month: 'short',
               day: 'numeric',
             }),
-            price: price[1],
+            price: price[1].toFixed(2),
           })),
         );
       })
@@ -130,14 +130,61 @@ const CoinDetail = () => {
           <h3>Price Chart (7 Days)</h3>
           <ResponsiveContainer width="100%" height={400}>
             <LineChart data={chartData}>
-              <XAxis dataKey="time" />
-              <YAxis domain={['auto', 'auto']} />
-              <Tooltip />
-              <Line type="monotone" dataKey="price" stroke="#8884d8" dot={false} />
+              <CartesianGrid
+                strokeDasharray="3 3"
+                stroke="rgba(255, 255, 255, 0.1)"
+              />
+              <XAxis
+                dataKey="time"
+                stroke="#9ca3af"
+                style={{ fontSize: "12px" }}
+              />
+              <YAxis
+                stroke="#9ca3af"
+                style={{ fontSize: "12px" }}
+                domain={["auto", "auto"]}
+              />
+              <Tooltip
+                contentStyle={{
+                  backgroundColor: "rgba(20, 20, 40, 0.95)",
+                  border: "1px solid rgba(255, 255, 255, 0.1)",
+                  borderRadius: "8px",
+                  color: "#e0e0e0",
+                }}
+              />
+
+              <Line
+                type="monotone"
+                dataKey="price"
+                stroke="#ADD8E6"
+                strokeWidth={2}
+                dot={false}
+              />
             </LineChart>
           </ResponsiveContainer>
         </div>
+        <div className='stats-grid'>
+          <div className='stat-card'>
+            <span className='stat-label'>Market Cap</span>
+            <span className='stat-value'>${formatToShortScale(coin.market_data.market_cap.usd)}</span>
+          </div>
+          <div className='stat-card'>
+            <span className='stat-label'>Volume</span>
+            <span className='stat-value'>${formatToShortScale(coin.market_data.total_volume.usd)}</span>
+          </div>
+          <div className='stat-card'>
+            <span className='stat-label'>Circulating Supply</span>
+            <span className='stat-value'>${coin.market_data.circulating_supply.toLocaleString() || 'N/A'}</span>
+          </div>
+          <div className='stat-card'>
+            <span className='stat-label'>Total Supply</span>
+            <span className='stat-value'>${coin.market_data.total_supply.toLocaleString() || 'N/A'}</span>
+          </div>
+        </div>
       </div>
+      <footer className="footer">
+        <p>Data provided by CoinGecko API • Updated every 30 seconds</p>
+      </footer>
     </div>
   );
 };

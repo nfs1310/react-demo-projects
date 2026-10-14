@@ -10,9 +10,13 @@ const Home = () => {
     const [sortBy, setSortBy] = useState<string>('market_cap_rank');
     const [filteredList, setFilteredList] = useState<Coin[]>([]);
     const [searchQuery, setSearchQuery] = useState<string>('');
+    const [updatedTime, setUpdatedTime] = useState<string>('');
 
     useEffect(() => {
-        loadCryptoData();
+        const interval = setTimeout(loadCryptoData, 30000);
+        console.log(interval)
+        setUpdatedTime(new Date().toLocaleTimeString());
+        return () => clearInterval(interval);
     }, []);
 
     useEffect(() => {
@@ -95,7 +99,9 @@ const Home = () => {
                     <button className={viewMode === 'list' ? 'active' : ''} onClick={() => setViewMode('list')}>List</button>
                 </div>
             </div>
-
+            <h2 className='crypto-container' style={{ textAlign: 'center', color: '#fff' }}>
+                {`UPDATED ON ${updatedTime}`}
+            </h2>
             {isLoading ? (
                 <div className='loading'>
                     <div className='spinner'></div>
@@ -108,6 +114,10 @@ const Home = () => {
                     ))}
                 </div>
             )}
+
+            <footer className="footer">
+                <p>Data provided by CoinGecko API • Updated every 30 seconds</p>
+            </footer>
         </div>
     )
 }
