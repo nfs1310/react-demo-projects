@@ -1,17 +1,33 @@
 import '../css/Home.css';
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import type { Movie } from '../interfaces/Movie'
 import MovieCard from '../components/MovieCard';
+import { getPopularMovies } from '../services/api';
 
 const Home = () => {
-
     const [searchQuery, setSearchQuery] = useState<string>('');
+    const [movies, setMovies] = useState<Movie[]>([]);
+    const [error, setError] = useState<string>('');
+    const [loading, setLoading] = useState<boolean>(false);
 
-    const movies: Movie[] = [
-        { id: 1, title: 'John Wick', release_date: '2024', url: '', name: '' },
-        { id: 2, title: 'Iron Man', release_date: '2008', url: '', name: '' },
-        { id: 3, title: 'Captain America', release_date: '2011', url: '', name: '' }
-    ];
+    useEffect(() => {
+        loadPopularMovies();
+    }, []);
+
+    const loadPopularMovies = async () => {
+        try {
+            setLoading(true);
+            const popularMovies = getPopularMovies();
+            setMovies(await popularMovies)
+        }
+        catch (err) {
+            setError('Error while fetching popular movies')
+            console.error(err);
+        }
+        finally {
+            setLoading(false);
+        }
+    }
 
     const handleMovieSearch: React.SubmitEventHandler<HTMLFormElement> = (e) => {
         e.preventDefault;
