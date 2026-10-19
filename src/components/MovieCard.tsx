@@ -1,3 +1,4 @@
+import '../css/MovieCard.css';
 import type { Movie } from '../interfaces/Movie'
 
 const MovieCard = ({ movie }: { movie: Movie }) => {

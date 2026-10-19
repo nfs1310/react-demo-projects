@@ -1,3 +1,4 @@
+import '../css/Home.css';
 import React, { useState } from 'react'
 import type { Movie } from '../interfaces/Movie'
 import MovieCard from '../components/MovieCard';
