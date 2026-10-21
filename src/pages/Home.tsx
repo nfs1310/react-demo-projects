@@ -2,7 +2,7 @@ import '../css/Home.css';
 import React, { useEffect, useState } from 'react'
 import type { Movie } from '../interfaces/Movie'
 import MovieCard from '../components/MovieCard';
-import { getPopularMovies } from '../services/api';
+import { getPopularMovies, searchMovies } from '../services/api';
 
 const Home = () => {
     const [searchQuery, setSearchQuery] = useState<string>('');
@@ -29,15 +29,32 @@ const Home = () => {
         }
     }
 
-    const handleMovieSearch: React.SubmitEventHandler<HTMLFormElement> = (e) => {
-        e.preventDefault;
-        alert(searchQuery);
-        setSearchQuery('');
+    const handleMovieSearch: React.SubmitEventHandler<HTMLFormElement> = async (e) => {
+        e.preventDefault();
+        if (!searchQuery.trim())
+            return;
+        if (loading)
+            return;
+
+        setLoading(true);
+
+        try {
+            const searcResult = await searchMovies(searchQuery);
+            setMovies(searcResult);
+            setError('');
+        } catch (err) {
+            setError('Faild to sear movie ...');
+            console.log('Faild to sear movie ...');
+
+        } finally {
+            setLoading(false)
+        }
+
+        // setSearchQuery('');
     }
 
     function updateSearchQuery(e: React.ChangeEvent<HTMLInputElement>) {
         setSearchQuery(e.target.value);
-        console.log(searchQuery);
     }
 
     return (
