@@ -63,6 +63,7 @@ const Home = () => {
                 <input type='text' placeholder='Search for movies ...' className='search-input' value={searchQuery} onChange={updateSearchQuery} />
                 <button className='search-button' type='submit'>Search</button>
             </form>
+            {error && <p className='error-message'>{error}</p>}
             <div className='movies-grid'>
                 {movies.map((movie) =>
                     movie.title.toLowerCase().includes(searchQuery) &&
