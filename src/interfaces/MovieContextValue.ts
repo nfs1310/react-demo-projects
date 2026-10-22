@@ -5,4 +5,5 @@ export interface MovieContextValue {
   addToFavorites: (movie: Movie) => void;
   removeFromFavorites: (movieId: number) => void;
   isFavorite: (movieId: number) => boolean;
+  removeAllFavorites:() => void;
 }

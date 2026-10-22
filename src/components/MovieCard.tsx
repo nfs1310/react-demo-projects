@@ -1,9 +1,17 @@
+import { useMovieContext } from '../contexts/MovieContext';
 import '../css/MovieCard.css';
 import type { Movie } from '../interfaces/Movie'
 
 const MovieCard = ({ movie }: { movie: Movie }) => {
-    function favoriteBtnClicked() {
-        alert('Favorite Button Clicked')
+    const { isFavorite, addToFavorites, removeFromFavorites } = useMovieContext();
+    const isFvrt = isFavorite(movie.id);
+    
+    function favoriteBtnClicked (e: React.MouseEvent<HTMLButtonElement>) {
+        e.preventDefault();
+        if(isFvrt)
+            removeFromFavorites(movie.id);
+        else
+            addToFavorites(movie)
     }
 
     const getMoviePoster = (posterUrl: string) => {
@@ -16,7 +24,7 @@ const MovieCard = ({ movie }: { movie: Movie }) => {
                 <div className='movie-poster'>
                     <img src={getMoviePoster(movie.poster_path)} alt={movie.name} />
                     <div className='movie-overlay'>
-                        <button className='favorite-btn' onClick={favoriteBtnClicked}>
+                        <button className={`favorite-btn ${isFvrt ? 'active' : ''}`} onClick={favoriteBtnClicked}>
                             ♥
                         </button>
                     </div>

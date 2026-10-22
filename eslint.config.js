@@ -24,7 +24,7 @@ export default defineConfig([
       tseslint.configs.recommendedTypeChecked,
 
       reactHooks.configs.flat.recommended,
-      reactRefresh.configs.vite,
+      { ...reactRefresh.configs.vite, rules: { ...reactRefresh.configs.vite.rules, 'react-refresh/only-export-components': ['error', { allowConstantExport: true, allowExportNames: ['useMovieContext'] }] } },
     ],
     languageOptions: {
       globals: globals.browser,

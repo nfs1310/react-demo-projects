@@ -50,3 +50,14 @@
   animation: fadeIn 0.3s ease-out forwards;
 }
 
+.remove-btn {
+  text-align: center;
+  background-color: #e50914;
+  color: aliceblue;
+}
+
+.favorites-header{
+  text-align: center;
+  color: tomato;
+  font-weight: bolder;
+}

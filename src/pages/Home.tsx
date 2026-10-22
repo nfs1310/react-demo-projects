@@ -65,7 +65,7 @@ const Home = () => {
             </form>
             {error && <p className='error-message'>{error}</p>}
             <div className='movies-grid'>
-                {movies.map((movie) =>
+                {movies.map((movie: Movie) =>
                     movie.title.toLowerCase().includes(searchQuery) &&
                     <MovieCard movie={movie} key={movie.id} />)}
             </div>

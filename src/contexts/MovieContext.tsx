@@ -34,11 +34,17 @@ export const MovieProvider = ({ children }: { children: ReactNode }) => {
     return favorites.some((m) => m.id === movieId);
   };
 
+  const removeAllFavorites = () => {
+    setFavorites([]);
+    alert('All Favorites REMOVED !!')
+  }
+
   const exposedValues: MovieContextValue = {
     favorites,
     addToFavorites,
     removeFromFavorites,
     isFavorite,
+    removeAllFavorites
   };
 
   return <MovieContext.Provider value={exposedValues}>{children}</MovieContext.Provider>;
